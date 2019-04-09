@@ -1,0 +1,26 @@
+{
+   "name": "FpisServer",
+   "version": "0.0.1",
+   "description": "Awesome project developed with TypeORM.",
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "nodemon": "^1.18.10",
+      "ts-node": "^3.3.0",
+      "typescript": "2.5.2"
+   },
+   "dependencies": {
+      "@types/lodash": "^4.14.123",
+      "apollo-server": "^2.4.8",
+      "bcrypt": "^3.0.5",
+      "graphql": "^14.1.1",
+      "jsonwebtoken": "^8.5.1",
+      "lodash": "^4.17.11",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.15"
+   },
+   "scripts": {
+      "start": "ts-node src/server.ts",
+      "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts"
+   }
+}

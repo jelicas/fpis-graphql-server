@@ -1,0 +1,20 @@
+{
+   "compilerOptions": {
+      "lib": [
+         "es5",
+         "es6"
+      ],
+      "target": "es6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": "./dist",
+      //kompajliranje u .js u dist folder
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true
+   },
+   "exclude": [
+      "node_modules"
+      //kad se kompajlira typescript, ne kompajlira node_modules
+   ]
+}
