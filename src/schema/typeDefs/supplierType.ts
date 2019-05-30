@@ -1,6 +1,24 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  input StringOperators {
+    eq: String
+    contains: String
+    startsWith: String
+    endsWith: String
+  }
+
+  input SupplierParameters {
+    name: StringOperators
+    address: StringOperators
+    PIB: StringOperators
+  }
+
+  input SupplierFilterParameter {
+    OR: [SupplierParameters]
+    AND: [SupplierParameters]
+  }
+
   type City {
     areaCode: String!
     name: String!
@@ -18,6 +36,7 @@ export const typeDefs = gql`
     getCities: [City]
     getSuppliers: [Supplier]
     getSupplier(taxIdNum: String!): Supplier
+    filterSuppliers(filter: SupplierFilterParameter): [Supplier]
   }
 
   extend type Mutation {
