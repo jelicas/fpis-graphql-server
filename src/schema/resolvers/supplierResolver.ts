@@ -1,9 +1,9 @@
 import { IResolverObject } from 'graphql-tools';
-import { City } from '../../entity/City';
-import { Supplier } from '../../entity/Supplier';
-import { Partner } from '../../entity/Partner';
-import { getManager, ConnectionManager } from 'typeorm';
-import { Like } from 'typeorm';
+import { getManager } from 'typeorm';
+
+import { City } from '../../entity/city';
+import { Partner } from '../../entity/partner';
+import { Supplier } from '../../entity/supplier';
 
 type FilterOption = 'eq' | 'startsWith' | 'contains' | 'endsWith';
 
@@ -24,12 +24,12 @@ const util = {
 
 export const resolvers: IResolverObject = {
   Supplier: {
-    name: (root) => {
+    name: root => {
       console.log(root);
       return root.partner.name;
     },
-    address: (root) => root.partner.address,
-    city: (root) => root.partner.city,
+    address: root => root.partner.address,
+    city: root => root.partner.city,
   },
   Query: {
     getCities: () => City.find(),
@@ -49,7 +49,7 @@ export const resolvers: IResolverObject = {
           .innerJoinAndSelect('s.partner', 'p')
           .innerJoinAndSelect('p.city', 'c');
 
-        filter.OR.forEach((filterObject) => {
+        filter.OR.forEach(filterObject => {
           console.log(filterObject); // { name: { eq: 'Hemofarm' } }
           let filterParam = Object.keys(filterObject)[0];
           let filterOption;
@@ -80,7 +80,7 @@ export const resolvers: IResolverObject = {
           .createQueryBuilder(Supplier, 's')
           .innerJoinAndSelect('s.partner', 'p');
 
-        filter.AND.forEach((filterObject) => {
+        filter.AND.forEach(filterObject => {
           let filterParam = Object.keys(filterObject)[0];
           let filterOption;
           switch (filterParam) {
@@ -116,7 +116,7 @@ export const resolvers: IResolverObject = {
   },
   Mutation: {
     addSupplier: async (_, { taxIdNum, regNum, name, address, city }) => {
-      await getManager().transaction(async (transactionalEntityManager) => {
+      await getManager().transaction(async transactionalEntityManager => {
         const newCity = await City.findOne(city);
         const newPartner = await transactionalEntityManager.insert(Partner, {
           taxIdNum,
@@ -134,7 +134,7 @@ export const resolvers: IResolverObject = {
       return Supplier.findOne(taxIdNum, { relations: ['partner', 'partner.city'] });
     },
     updateSupplier: async (_, { taxIdNum, regNum, name, address, city }) => {
-      await getManager().transaction(async (transactionalEntityManager) => {
+      await getManager().transaction(async transactionalEntityManager => {
         const newCity = await City.findOne(city);
         await transactionalEntityManager.update(Partner, taxIdNum, {
           name,
@@ -146,7 +146,7 @@ export const resolvers: IResolverObject = {
       return Supplier.findOne(taxIdNum, { relations: ['partner', 'partner.city'] });
     },
     deleteSupplier: async (_, { taxIdNum }) => {
-      return getManager().transaction(async (transactionalEntityManager) => {
+      return getManager().transaction(async transactionalEntityManager => {
         console.log('here');
         const supplierStatus = await transactionalEntityManager.delete(Supplier, taxIdNum);
         if (supplierStatus.affected === 0) {

@@ -1,28 +1,93 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, ManyToOne } from 'typeorm';
-import { TypeOfEmployee } from './TypeOfEmployee';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
-export class User extends BaseEntity {
-	@PrimaryGeneratedColumn() id: Number;
+import { EmployeeType } from './EmployeeType';
+import { Order } from './Order';
+import { Requisition } from './Requisition';
 
-	@Column() name: string;
+@Entity('user', { schema: 'fpis' })
+@Index('FK_0c1897db79478228a0711c73bcb', ['type'])
+export class User {
+  @PrimaryGeneratedColumn({
+    type: 'int',
+    name: 'ID',
+  })
+  id: number;
 
-	@Column() surname: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Name',
+  })
+  name: string;
 
-	@Column() username: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Surname',
+  })
+  surname: string;
 
-	@Column() email: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Username',
+  })
+  username: string;
 
-	@Column() password: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Email',
+  })
+  email: string;
 
-	@Column() pid: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Password',
+  })
+  password: string;
 
-	@Column() biography: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Biography',
+  })
+  biography: string;
 
-	@Column() address: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Address',
+  })
+  address: string;
 
-	@Column() telephone: string;
+  @Column('varchar', {
+    nullable: false,
+    name: 'Telephone',
+  })
+  telephone: string;
 
-	@ManyToOne((type) => TypeOfEmployee, (typeOfEmployee) => typeOfEmployee.users)
-	type: TypeOfEmployee;
+  @ManyToOne(type => EmployeeType, employeeType => employeeType.users, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn({ name: 'TypeID' })
+  type: EmployeeType | null;
+
+  @Column('varchar', {
+    nullable: false,
+    name: 'PID',
+  })
+  PID: string;
+
+  @OneToMany(type => Order, order => order.employee, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
+  orders: Order[];
+
+  @OneToMany(type => Requisition, requisition => requisition.employee, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  requisitions: Requisition[];
 }
