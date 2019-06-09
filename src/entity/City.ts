@@ -1,9 +1,9 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany } from 'typeorm';
 
 import { Partner } from './Partner';
 
 @Entity('city', { schema: 'fpis' })
-export class City {
+export class City extends BaseEntity {
   @Column('varchar', {
     nullable: false,
     primary: true,
@@ -17,8 +17,8 @@ export class City {
   })
   name: string;
 
-  @OneToMany(type => Partner, partner => partner.cityAreaCode, {
-    onDelete: 'NO ACTION',
+  @OneToMany(type => Partner, partner => partner.city, {
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   partners: Partner[];

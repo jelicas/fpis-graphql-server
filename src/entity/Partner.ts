@@ -1,14 +1,22 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { City } from './City';
 import { Supplier } from './Supplier';
 
 @Entity('partner', { schema: 'fpis' })
-@Index('FK_0f99c560f72b3e48972790333b8', ['cityAreaCode'])
-export class Partner {
-  @Column('varchar', {
+// @Index('Partner_city_areaCode_fk', ['cityAreaCode'])
+export class Partner extends BaseEntity {
+  @PrimaryColumn('varchar', {
     nullable: false,
-    primary: true,
     name: 'TaxIdNum',
   })
   taxIdNum: string;
@@ -25,10 +33,12 @@ export class Partner {
   })
   address: string;
 
-  @ManyToOne(type => City, city => city.partners, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
+  //done
+  @ManyToOne(type => City, city => city.partners, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'CityAreaCode' })
-  cityAreaCode: City | null;
+  city: City | null;
 
+  //done
   @OneToOne(type => Supplier, supplier => supplier.taxIdNum, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

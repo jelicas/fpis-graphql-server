@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { CatalogItem } from './CatalogItem';
 import { Product } from './Product';
 
 @Entity('factory', { schema: 'fpis' })
-export class Factory {
+export class Factory extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'ID',
@@ -18,13 +18,13 @@ export class Factory {
   name: string;
 
   @OneToMany(type => CatalogItem, catalogItem => catalogItem.factory, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   catalogItems: CatalogItem[];
 
   @OneToMany(type => Product, product => product.factory, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   products: Product[];

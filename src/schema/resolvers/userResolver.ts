@@ -1,6 +1,6 @@
 import { IResolverObject } from 'graphql-tools';
 
-import { TypeOfEmployee } from '../../entity/TypeOfEmployee';
+import { EmployeeType } from '../../entity/EmployeeType';
 import { User } from '../../entity/User';
 
 const bcrypt = require('bcrypt');
@@ -42,7 +42,7 @@ export const resolvers: IResolverObject = {
   },
   Mutation: {
     addTypeOfEmployee: async (_, { title }) => {
-      const newType = new TypeOfEmployee();
+      const newType = new EmployeeType();
       newType.title = title;
       return await newType.save();
     },

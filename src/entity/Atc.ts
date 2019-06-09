@@ -1,9 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Drug } from './Drug';
 
 @Entity('atc', { schema: 'fpis' })
-export class Atc {
+export class Atc extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'ID',
@@ -16,6 +16,6 @@ export class Atc {
   })
   name: string;
 
-  @OneToMany(type => Drug, drug => drug.atc, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
+  @OneToMany(type => Drug, drug => drug.atc, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   drugs: Drug[];
 }

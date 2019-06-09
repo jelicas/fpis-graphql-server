@@ -1,18 +1,10 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { RequisitionItem } from './RequisitionItem';
 import { User } from './User';
 
 @Entity('requisition', { schema: 'fpis' })
-@Index('Requisition_user_id_fk', ['employee'])
+// @Index('Requisition_user_id_fk', ['employee'])
 export class Requisition {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -26,21 +18,23 @@ export class Requisition {
   })
   dateCreated: number | null;
 
-  @Column('int', {
+  @Column('varchar', {
     nullable: true,
     name: 'SerialNumber',
   })
-  serialNumber: number | null;
+  serialNumber: string | null;
 
+  //done
   @ManyToOne(type => User, user => user.requisitions, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
+    onDelete: 'RESTRICT',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'EmployeeID' })
   employee: User | null;
 
+  //done
   @OneToMany(type => RequisitionItem, requisitionItem => requisitionItem.requisition, {
-    onDelete: 'NO ACTION',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   requisitionItems: RequisitionItem[];

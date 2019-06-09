@@ -1,17 +1,16 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
-import { OrderItem } from './OrderItem';
 import { Product } from './Product';
 import { ProductPerSupplier } from './ProductPerSupplier';
 import { Requisition } from './Requisition';
 
 @Entity('requisiton_item', { schema: 'fpis' })
-@Index('requisiton_item_product_id_fk', ['product'])
+// @Index('requisiton_item_product_id_fk', ['product'])
 export class RequisitionItem {
   @ManyToOne(type => Requisition, requisition => requisition.requisitionItems, {
     primary: true,
     nullable: false,
-    onDelete: 'NO ACTION',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'RequistionID' })
@@ -37,34 +36,23 @@ export class RequisitionItem {
   totalQuantity: number | null;
 
   @ManyToOne(type => Product, product => product.requisitionItems, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'ProductID' })
   product: Product | null;
 
-  @OneToMany(type => OrderItem, orderItem => orderItem.requisition, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'CASCADE',
-  })
-  orderItems: OrderItem[];
-
-  @OneToMany(type => OrderItem, orderItem => orderItem.requisitionItem, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'CASCADE',
-  })
-  orderItems2: OrderItem[];
-
+  //done
   @OneToMany(type => ProductPerSupplier, productPerSupplier => productPerSupplier.requisition, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  productPerSuppliers: ProductPerSupplier[];
+  productPerSuppliersReq: ProductPerSupplier[];
 
   @OneToMany(
     type => ProductPerSupplier,
     productPerSupplier => productPerSupplier.itemSerialNumber,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
   )
-  productPerSuppliers2: ProductPerSupplier[];
+  productPerSuppliersSerNumItem: ProductPerSupplier[];
 }

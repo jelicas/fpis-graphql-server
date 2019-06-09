@@ -1,18 +1,25 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
+import { CatalogItemProduct } from './CatalogItemProduct';
 import { Factory } from './Factory';
 import { TaxType } from './TaxType';
 
 @Entity('catalog_item', { schema: 'fpis' })
-@Index('CatalogItem_factory_id_fk', ['factory'])
-@Index('catalogitem_taxtype_ID_fk', ['taxType'])
-export class CatalogItem {
-  @Column('int', {
-    nullable: false,
-    primary: true,
+// @Index('CatalogItem_factory_id_fk', ['factory'])
+// @Index('catalogitem_taxtype_ID_fk', ['taxType'])
+export class CatalogItem extends BaseEntity {
+  @PrimaryColumn('varchar', {
     name: 'CatID',
   })
-  catId: number;
+  catId: string;
 
   @Column('int', {
     nullable: false,
@@ -33,7 +40,7 @@ export class CatalogItem {
     width: 1,
     name: 'Drug',
   })
-  drug: boolean;
+  isDrug: boolean;
 
   @Column('varchar', {
     nullable: false,
@@ -59,17 +66,31 @@ export class CatalogItem {
   })
   discount: number | null;
 
+  //done
   @ManyToOne(type => Factory, factory => factory.catalogItems, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'FactoryID' })
   factory: Factory | null;
 
+  //done
   @ManyToOne(type => TaxType, taxType => taxType.catalogItems, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'TaxTypeID' })
   taxType: TaxType | null;
+
+  @OneToOne(type => CatalogItemProduct, catalogItemProduct => catalogItemProduct.catItem, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'CASCADE',
+  })
+  catalogItemProduct: CatalogItemProduct | null;
+
+  @OneToOne(type => CatalogItemProduct, catalogItemProduct => catalogItemProduct.catItemNum, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'CASCADE',
+  })
+  catalogItemProductNum: CatalogItemProduct | null;
 }

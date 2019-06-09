@@ -1,10 +1,9 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   Index,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -14,14 +13,14 @@ import {
 import { CatalogItemProduct } from './CatalogItemProduct';
 import { Drug } from './Drug';
 import { Factory } from './Factory';
-import { ItemType } from './ItemType';
+import { Item } from './Item';
 import { PriceHistory } from './PriceHistory';
 import { ProductState } from './ProductState';
 import { RequisitionItem } from './RequisitionItem';
 
 @Entity('product', { schema: 'fpis' })
 @Index('product_factory_id_fk', ['factory'])
-export class Product {
+export class Product extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'ID',
@@ -46,42 +45,48 @@ export class Product {
   })
   currentPrice: number | null;
 
+  //done
   @ManyToOne(type => Factory, factory => factory.products, {
     nullable: false,
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'FactoryID' })
   factory: Factory | null;
 
+  //done
   @OneToMany(type => CatalogItemProduct, catalogItemProduct => catalogItemProduct.product, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   catalogItemProducts: CatalogItemProduct[];
 
+  //done
   @OneToOne(type => Drug, drug => drug.product, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   drug: Drug | null;
 
+  //done
+  @OneToOne(type => Item, item => item.product, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  item: Item | null;
+
+  //done
   @OneToMany(type => PriceHistory, priceHistory => priceHistory.product, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   priceHistory: PriceHistory[];
 
+  //done
   @OneToMany(type => ProductState, productState => productState.product, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   productStates: ProductState[];
 
+  //done
   @OneToMany(type => RequisitionItem, requisitionItem => requisitionItem.product, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   requisitionItems: RequisitionItem[];
-
-  @ManyToMany(type => ItemType, itemType => itemType.products, { nullable: false })
-  @JoinTable({ name: 'item' })
-  itemTypes: ItemType[];
 }

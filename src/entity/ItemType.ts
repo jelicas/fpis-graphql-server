@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Product } from './Product';
+import { Item } from './Item';
 
 @Entity('item_type', { schema: 'fpis' })
-export class ItemType {
+export class ItemType extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'ID',
@@ -16,6 +16,6 @@ export class ItemType {
   })
   name: string;
 
-  @ManyToMany(type => Product, product => product.itemTypes)
-  products: Product[];
+  @OneToMany(type => Item, item => item.itemType, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
+  items: Item[];
 }

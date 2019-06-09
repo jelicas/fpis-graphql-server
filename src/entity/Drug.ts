@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { Atc } from './Atc';
 import { Inn } from './Inn';
@@ -7,12 +7,13 @@ import { PackageType } from './PackageType';
 import { Product } from './Product';
 
 @Entity('drug', { schema: 'fpis' })
-@Index('Drug_atc_ID_fk', ['atc'])
-@Index('Drug_inn_ID_fk', ['inn'])
-@Index('Drug_measurementunit_ID_fk', ['measurementUnit'])
-@Index('Drug_packagetype_ID_fk', ['packageType'])
-@Index('Drug_product_id_fk', ['product'])
-export class Drug {
+// @Index('Drug_atc_ID_fk', ['atc'])
+// @Index('Drug_inn_ID_fk', ['inn'])
+// @Index('Drug_measurementunit_ID_fk', ['measurementUnit'])
+// @Index('Drug_packagetype_ID_fk', ['packageType'])
+// @Index('Drug_product_id_fk', ['product'])
+export class Drug extends BaseEntity {
+  //done
   @OneToOne(type => Product, product => product.drug, {
     primary: true,
     nullable: false,
@@ -40,25 +41,29 @@ export class Drug {
   })
   itemsPerPackage: number | null;
 
+  //done
   @ManyToOne(type => MeasurementUnit, measurementUnit => measurementUnit.drugs, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'MeasurementUnitID' })
   measurementUnit: MeasurementUnit | null;
 
+  //done
   @ManyToOne(type => PackageType, packageType => packageType.drugs, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'PackageTypeID' })
   packageType: PackageType | null;
 
-  @ManyToOne(type => Atc, atc => atc.drugs, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
+  //done
+  @ManyToOne(type => Atc, atc => atc.drugs, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'ATCID' })
   atc: Atc | null;
 
-  @ManyToOne(type => Inn, inn => inn.drugs, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
+  //done
+  @ManyToOne(type => Inn, inn => inn.drugs, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'INNID' })
   inn: Inn | null;
 }

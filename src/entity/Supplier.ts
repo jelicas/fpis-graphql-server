@@ -1,14 +1,24 @@
-import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { Catalog } from './Catalog';
 import { Order } from './Order';
-import { OrderItem } from './OrderItem';
 import { Partner } from './Partner';
 import { ProductPerSupplier } from './ProductPerSupplier';
 
 @Entity('supplier', { schema: 'fpis' })
-@Index('REL_9129c38ec99f6c1261d9f9ae32', ['taxIdNum'], { unique: true })
-export class Supplier {
+// @Index('Supplier_partner_taxIdNum_fk', ['taxIdNum'], { unique: true })
+export class Supplier extends BaseEntity {
+  @PrimaryColumn({ name: 'TaxIdNum' })
+  taxIdNum: string;
+
   @OneToOne(type => Partner, partner => partner.supplier, {
     primary: true,
     nullable: false,
@@ -16,32 +26,29 @@ export class Supplier {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'TaxIdNum' })
-  taxIdNum: Partner | null;
+  partner: Partner | null;
 
   @Column('varchar', {
     nullable: false,
     name: 'RegNum',
   })
-  RegNum: string;
+  regNum: string;
 
-  @OneToOne(type => Catalog, catalog => catalog.taxIdNum, {
-    onDelete: 'NO ACTION',
+  //done
+  @OneToMany(type => Catalog, catalog => catalog.supplier, {
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  catalog: Catalog | null;
+  catalogs: Catalog[] | null;
 
-  @OneToOne(type => OrderItem, orderItem => orderItem.supplier, {
-    onDelete: 'NO ACTION',
+  //done
+  @OneToMany(type => Order, order => order.supplier, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
+  orders: Order[] | null;
+
+  //done
+  @OneToMany(type => ProductPerSupplier, productPerSupplier => productPerSupplier.supplier, {
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  orderItem: OrderItem | null;
-
-  @OneToOne(type => Order, order => order.supplier, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
-  order: Order | null;
-
-  @OneToOne(type => ProductPerSupplier, productPerSupplier => productPerSupplier.taxIdNum, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'CASCADE',
-  })
-  productPerSupplier: ProductPerSupplier | null;
+  productsPerSupplier: ProductPerSupplier[] | null;
 }

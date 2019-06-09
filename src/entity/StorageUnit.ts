@@ -1,9 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { ProductState } from './ProductState';
 
 @Entity('storage_unit', { schema: 'fpis' })
-export class StorageUnit {
+export class StorageUnit extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'ID',
@@ -17,7 +17,7 @@ export class StorageUnit {
   name: string;
 
   @OneToMany(type => ProductState, productState => productState.storageUnit, {
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   productStates: ProductState[];

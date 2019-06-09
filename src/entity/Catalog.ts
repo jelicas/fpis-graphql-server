@@ -1,15 +1,14 @@
-import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { Supplier } from './Supplier';
 
 @Entity('catalog', { schema: 'fpis' })
-@Index('catalog_taxIdNum_uindex', ['taxIdNum'], { unique: true })
-export class Catalog {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+export class Catalog extends BaseEntity {
+  @PrimaryColumn({
+    type: 'varchar',
     name: 'ID',
   })
-  id: number;
+  id: string;
 
   @Column('date', {
     nullable: true,
@@ -17,11 +16,11 @@ export class Catalog {
   })
   date: string | null;
 
-  @OneToOne(type => Supplier, supplier => supplier.catalog, {
+  @ManyToOne(type => Supplier, supplier => supplier.catalogs, {
     nullable: false,
-    onDelete: 'NO ACTION',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'TaxIdNum' })
-  taxIdNum: Supplier | null;
+  supplier: Supplier | null;
 }

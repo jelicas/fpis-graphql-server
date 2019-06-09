@@ -1,9 +1,9 @@
 import { IResolverObject } from 'graphql-tools';
 import { getManager } from 'typeorm';
 
-import { City } from '../../entity/city';
-import { Partner } from '../../entity/partner';
-import { Supplier } from '../../entity/supplier';
+import { City } from '../../entity/City';
+import { Partner } from '../../entity/Partner';
+import { Supplier } from '../../entity/Supplier';
 
 type FilterOption = 'eq' | 'startsWith' | 'contains' | 'endsWith';
 
@@ -34,7 +34,7 @@ export const resolvers: IResolverObject = {
   Query: {
     getCities: () => City.find(),
     getSuppliers: () => Supplier.find({ relations: ['partner', 'partner.city'] }),
-    getSupplier: (_, { taxIdNum }) => Supplier.findOne(taxIdNum),
+    getSupplier: (_, { taxIdNum }) => Supplier.findOne({ where: { taxIdNum } }),
 
     filterSuppliers: async (_, { filter }) => {
       // let filterOptions = JSON.parse(JSON.stringify(filter));
@@ -126,9 +126,8 @@ export const resolvers: IResolverObject = {
         });
         const partner = await Partner.findOne(taxIdNum);
         const newSupplier = await transactionalEntityManager.insert(Supplier, {
-          taxIdNum,
-          regNum,
           partner,
+          regNum,
         });
       });
       return Supplier.findOne(taxIdNum, { relations: ['partner', 'partner.city'] });

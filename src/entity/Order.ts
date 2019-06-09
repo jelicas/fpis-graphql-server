@@ -1,20 +1,12 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Supplier } from './Supplier';
 import { User } from './User';
 
 @Entity('order', { schema: 'fpis' })
-@Index('order_SupplierID_uindex', ['supplier'], { unique: true })
-@Index('order_user_id_fk', ['employee'])
-export class Order {
+// @Index('order_SupplierID_uindex', ['supplier'], { unique: true })
+// @Index('order_user_id_fk', ['employee'])
+export class Order extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'ID',
@@ -26,13 +18,13 @@ export class Order {
     default: () => 'CURRENT_TIMESTAMP',
     name: 'DateCreated',
   })
-  DateCreated: Date;
+  dateCreated: Date;
 
-  @Column('int', {
+  @Column('varchar', {
     nullable: false,
     name: 'SerialNumber',
   })
-  serialNumber: number;
+  serialNumber: string;
 
   @Column('double', {
     nullable: true,
@@ -40,12 +32,14 @@ export class Order {
   })
   totalAmount: number | null;
 
-  @ManyToOne(type => User, user => user.orders, { onDelete: 'NO ACTION', onUpdate: 'CASCADE' })
+  //done
+  @ManyToOne(type => User, user => user.orders, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'EmployeeID' })
   employee: User | null;
 
-  @OneToOne(type => Supplier, supplier => supplier.order, {
-    onDelete: 'NO ACTION',
+  //done
+  @ManyToOne(type => Supplier, supplier => supplier.orders, {
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'SupplierID' })
