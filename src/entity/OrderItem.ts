@@ -2,50 +2,30 @@ import { BaseEntity, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { ProductPerSupplier } from './ProductPerSupplier';
 
-@Entity('order_item', { schema: 'fpis' })
-// @Index('order_item_OrderID_uindex', ['OrderID'], { unique: true })
-// @Index('order_item_requisiton_item_RequistionID_SerialNumber_fk', [
-//   'requisition',
-//   'requisitionItem',
-// ])
-// @Index('order_item_SupplierID_uindex', ['supplier'], { unique: true })
+@Entity()
 export class OrderItem extends BaseEntity {
-  @Column('int', {
+  @Column('integer', {
     nullable: false,
     primary: true,
-    name: 'OrderID',
+    name: 'order_id',
   })
   orderId: number;
 
-  @Column('int', {
+  @Column('integer', {
     nullable: false,
     primary: true,
-    name: 'SerialNumber',
+    name: 'serial_number',
   })
   serialNumber: number;
 
-  @OneToOne(type => ProductPerSupplier, productPerSupplier => productPerSupplier.orderItemReq, {
+  @OneToOne(type => ProductPerSupplier, productPerSupplier => productPerSupplier.orderItem, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'RequisitionID' })
+  @JoinColumn([
+    { name: 'requisition_id', referencedColumnName: 'requisitionId' },
+    { name: 'item_serial_number', referencedColumnName: 'itemSerialNumber' },
+    { name: 'supplier_id', referencedColumnName: 'taxIdNum' },
+  ])
   requisition: ProductPerSupplier | null;
-
-  @OneToOne(type => ProductPerSupplier, productPerSupplier => productPerSupplier.orderItemSerNum, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'RequisitionItemID' })
-  requisitionItem: ProductPerSupplier | null;
-
-  @OneToOne(
-    type => ProductPerSupplier,
-    productPerSupplier => productPerSupplier.orderItemSupplier,
-    {
-      onDelete: 'RESTRICT',
-      onUpdate: 'CASCADE',
-    }
-  )
-  @JoinColumn({ name: 'SupplierID' })
-  supplier: ProductPerSupplier | null;
 }

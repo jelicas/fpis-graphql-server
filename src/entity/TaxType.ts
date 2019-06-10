@@ -2,17 +2,17 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 't
 
 import { CatalogItem } from './CatalogItem';
 
-@Entity('tax_type', { schema: 'fpis' })
+@Entity()
 export class TaxType extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
   name: string;
 

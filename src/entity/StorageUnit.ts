@@ -2,17 +2,17 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 't
 
 import { ProductState } from './ProductState';
 
-@Entity('storage_unit', { schema: 'fpis' })
+@Entity()
 export class StorageUnit extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
   name: string;
 

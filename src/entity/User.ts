@@ -12,82 +12,80 @@ import { EmployeeType } from './EmployeeType';
 import { Order } from './Order';
 import { Requisition } from './Requisition';
 
-@Entity('user', { schema: 'fpis' })
-// @Index('User_employee_type_type_fk', ['type'])
+@Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    length: 128,
+    name: 'name',
   })
   name: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Surname',
+    name: 'surname',
   })
   surname: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Username',
+    name: 'username',
   })
   username: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Email',
+    name: 'email',
   })
   email: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Password',
+    name: 'password',
   })
   password: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Biography',
+    name: 'biography',
   })
   biography: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Address',
+    name: 'address',
   })
   address: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Telephone',
+    name: 'telephone',
   })
   telephone: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'PID',
+    name: 'pid',
   })
   pid: string;
 
-  //done
   @ManyToOne(type => EmployeeType, employeeType => employeeType.users, {
+    nullable: false,
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'TypeID' })
+  @JoinColumn({ name: 'type_id' })
   type: EmployeeType | null;
 
-  //done
   @OneToMany(type => Order, order => order.employee, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   orders: Order[];
 
-  //done
   @OneToMany(type => Requisition, requisition => requisition.employee, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',

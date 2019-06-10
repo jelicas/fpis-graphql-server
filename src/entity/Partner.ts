@@ -2,7 +2,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -12,33 +11,30 @@ import {
 import { City } from './City';
 import { Supplier } from './Supplier';
 
-@Entity('partner', { schema: 'fpis' })
-// @Index('Partner_city_areaCode_fk', ['cityAreaCode'])
+@Entity()
 export class Partner extends BaseEntity {
   @PrimaryColumn('varchar', {
     nullable: false,
-    name: 'TaxIdNum',
+    name: 'tax_id_num',
   })
   taxIdNum: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
   name: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Address',
+    name: 'address',
   })
   address: string;
 
-  //done
   @ManyToOne(type => City, city => city.partners, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'CityAreaCode' })
+  @JoinColumn({ name: 'city_area_code' })
   city: City | null;
 
-  //done
   @OneToOne(type => Supplier, supplier => supplier.taxIdNum, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

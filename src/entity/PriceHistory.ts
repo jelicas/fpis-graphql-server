@@ -2,7 +2,7 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { Product } from './Product';
 
-@Entity('price_history', { schema: 'fpis' })
+@Entity()
 export class PriceHistory extends BaseEntity {
   @ManyToOne(type => Product, product => product.priceHistory, {
     primary: true,
@@ -10,19 +10,19 @@ export class PriceHistory extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'ProductID' })
+  @JoinColumn({ name: 'product_id' })
   product: Product | null;
 
   @Column('datetime', {
     nullable: false,
     primary: true,
-    name: 'ChangeDate',
+    name: 'change_date',
   })
   changeDate: Date;
 
   @Column('double', {
     nullable: false,
-    name: 'Price',
+    name: 'price',
   })
   price: number;
 }

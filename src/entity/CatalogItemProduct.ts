@@ -3,16 +3,17 @@ import { BaseEntity, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } fr
 import { CatalogItem } from './CatalogItem';
 import { Product } from './Product';
 
-@Entity('catalog_item_product', { schema: 'fpis' })
-// @Index('catalog_item_product_product_ID_fk', ['product'])
+@Entity()
 export class CatalogItemProduct extends BaseEntity {
   @PrimaryColumn({
-    name: 'CatID',
+    name: 'cat_id',
+    type: 'varchar',
   })
-  catId: number;
+  catId: string;
 
   @PrimaryColumn({
-    name: 'ItemNumber',
+    name: 'item_number',
+    type: 'integer',
   })
   itemNumber: number;
 
@@ -22,22 +23,16 @@ export class CatalogItemProduct extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'CatID' })
-  catItem: CatalogItem | null;
-
-  @OneToOne(type => CatalogItem, catalogItem => catalogItem.catalogItemProductNum, {
-    primary: true,
-    nullable: false,
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'ItemNumber' })
-  catItemNum: CatalogItem | null;
+  @JoinColumn([
+    { name: 'cat_id', referencedColumnName: 'catId' },
+    { name: 'item_number', referencedColumnName: 'serialNumber' },
+  ])
+  catItem: CatalogItem;
 
   @ManyToOne(type => Product, product => product.catalogItemProducts, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'ProductID' })
+  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
   product: Product | null;
 }

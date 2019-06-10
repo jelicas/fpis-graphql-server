@@ -12,74 +12,70 @@ import { CatalogItemProduct } from './CatalogItemProduct';
 import { Factory } from './Factory';
 import { TaxType } from './TaxType';
 
-@Entity('catalog_item', { schema: 'fpis' })
-// @Index('CatalogItem_factory_id_fk', ['factory'])
-// @Index('catalogitem_taxtype_ID_fk', ['taxType'])
+@Entity()
 export class CatalogItem extends BaseEntity {
   @PrimaryColumn('varchar', {
-    name: 'CatID',
+    name: 'cat_id',
   })
   catId: string;
 
-  @Column('int', {
+  @Column('integer', {
     nullable: false,
     primary: true,
-    name: 'SerialNumber',
+    name: 'serial_number',
   })
   serialNumber: number;
 
   @Column('tinyint', {
     nullable: false,
     width: 1,
-    name: 'RFZO',
+    name: 'rfzo',
   })
   rfzo: boolean;
 
   @Column('tinyint', {
     nullable: false,
     width: 1,
-    name: 'Drug',
+    name: 'drug',
   })
   isDrug: boolean;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
   name: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'MeasurementUnit',
+    name: 'measurement_unit',
   })
   measurementUnit: string;
 
   @Column('double', {
     nullable: false,
-    name: 'Price',
+    name: 'price',
   })
   price: number;
 
   @Column('double', {
     nullable: true,
-    name: 'Discount',
+    name: 'discount',
   })
   discount: number | null;
 
-  //done
   @ManyToOne(type => Factory, factory => factory.catalogItems, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'FactoryID' })
+  @JoinColumn({ name: 'factory_id' })
   factory: Factory | null;
 
-  //done
   @ManyToOne(type => TaxType, taxType => taxType.catalogItems, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'TaxTypeID' })
+  @JoinColumn({ name: 'tax_type_id' })
   taxType: TaxType | null;
 
   @OneToOne(type => CatalogItemProduct, catalogItemProduct => catalogItemProduct.catItem, {
@@ -87,10 +83,4 @@ export class CatalogItem extends BaseEntity {
     onUpdate: 'CASCADE',
   })
   catalogItemProduct: CatalogItemProduct | null;
-
-  @OneToOne(type => CatalogItemProduct, catalogItemProduct => catalogItemProduct.catItemNum, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
-  })
-  catalogItemProductNum: CatalogItemProduct | null;
 }

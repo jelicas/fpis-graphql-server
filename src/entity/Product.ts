@@ -2,7 +2,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -18,72 +17,64 @@ import { PriceHistory } from './PriceHistory';
 import { ProductState } from './ProductState';
 import { RequisitionItem } from './RequisitionItem';
 
-@Entity('product', { schema: 'fpis' })
-@Index('product_factory_id_fk', ['factory'])
+@Entity()
 export class Product extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
   name: string;
 
   @Column('double', {
     nullable: true,
-    name: 'Quantity',
+    name: 'quantity',
   })
   quantity: number | null;
 
   @Column('double', {
     nullable: true,
-    name: 'CurrentPrice',
+    name: 'current_price',
   })
   currentPrice: number | null;
 
-  //done
   @ManyToOne(type => Factory, factory => factory.products, {
     nullable: false,
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'FactoryID' })
+  @JoinColumn({ name: 'factory_id' })
   factory: Factory | null;
 
-  //done
   @OneToMany(type => CatalogItemProduct, catalogItemProduct => catalogItemProduct.product, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   catalogItemProducts: CatalogItemProduct[];
 
-  //done
   @OneToOne(type => Drug, drug => drug.product, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   drug: Drug | null;
 
-  //done
   @OneToOne(type => Item, item => item.product, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   item: Item | null;
 
-  //done
   @OneToMany(type => PriceHistory, priceHistory => priceHistory.product, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   priceHistory: PriceHistory[];
 
-  //done
   @OneToMany(type => ProductState, productState => productState.product, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   productStates: ProductState[];
 
-  //done
   @OneToMany(type => RequisitionItem, requisitionItem => requisitionItem.product, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',

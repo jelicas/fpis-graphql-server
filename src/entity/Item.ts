@@ -3,7 +3,7 @@ import { BaseEntity, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { ItemType } from './ItemType';
 import { Product } from './Product';
 
-@Entity('item', { schema: 'fpis' })
+@Entity()
 export class Item extends BaseEntity {
   @OneToOne(type => Product, product => product.drug, {
     primary: true,
@@ -11,14 +11,13 @@ export class Item extends BaseEntity {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'ProductID' })
+  @JoinColumn({ name: 'product_id' })
   product: Product | null;
 
-  //done
   @ManyToOne(type => ItemType, itemType => itemType.items, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'ItemTypeID' })
+  @JoinColumn({ name: 'item_type_id' })
   itemType: ItemType | null;
 }

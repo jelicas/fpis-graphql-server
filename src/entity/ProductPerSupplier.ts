@@ -1,33 +1,39 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { OrderItem } from './OrderItem';
 import { RequisitionItem } from './RequisitionItem';
 import { Supplier } from './Supplier';
 
-@Entity('product_per_supplier', { schema: 'fpis' })
-// @Index('productpersupplier_TaxIdNum_uindex', ['taxIdNum'], { unique: true })
+@Entity()
 export class ProductPerSupplier extends BaseEntity {
+  @PrimaryColumn({ type: 'integer', name: 'requisition_id' })
+  requisitionId: number;
+
+  @PrimaryColumn({ name: 'item_serial_number' })
+  itemSerialNumber: number;
+
+  @PrimaryColumn({ name: 'tax_id_num' })
+  taxIdNum: string;
+
   @ManyToOne(type => RequisitionItem, requisitionItem => requisitionItem.productPerSuppliersReq, {
     primary: true,
     nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'RequisitionID' })
+  @JoinColumn([
+    { name: 'requisition_id', referencedColumnName: 'requistionId' },
+    { name: 'item_serial_number', referencedColumnName: 'serialNumber' },
+  ])
   requisition: RequisitionItem | null;
-
-  @ManyToOne(
-    type => RequisitionItem,
-    requisitionItem => requisitionItem.productPerSuppliersSerNumItem,
-    {
-      primary: true,
-      nullable: false,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    }
-  )
-  @JoinColumn({ name: 'ItemSerialNumber' })
-  itemSerialNumber: RequisitionItem | null;
 
   @ManyToOne(type => Supplier, supplier => supplier.productsPerSupplier, {
     primary: true,
@@ -35,25 +41,25 @@ export class ProductPerSupplier extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'TaxIdNum' })
+  @JoinColumn({ name: 'tax_id_num' })
   supplier: Supplier | null;
 
   @Column('double', {
     nullable: true,
-    name: 'OrderedQuantity',
+    name: 'ordered_quantity',
   })
   orderedQuantity: number | null;
 
   @Column('double', {
     nullable: true,
-    name: 'OrderQuantity',
+    name: 'order_quantity',
   })
   orderQuantity: number | null;
 
   @Column('tinyint', {
     nullable: true,
     width: 1,
-    name: 'Ordered',
+    name: 'ordered',
   })
   ordered: boolean | null;
 
@@ -61,17 +67,5 @@ export class ProductPerSupplier extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  orderItemReq: OrderItem | null;
-
-  @OneToOne(type => OrderItem, orderItem => orderItem.requisitionItem, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
-  })
-  orderItemSerNum: OrderItem | null;
-
-  @OneToOne(type => OrderItem, orderItem => orderItem.supplier, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE',
-  })
-  orderItemSupplier: OrderItem | null;
+  orderItem: OrderItem | null;
 }

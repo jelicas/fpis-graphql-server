@@ -2,18 +2,18 @@ import { BaseEntity, Column, Entity, OneToMany } from 'typeorm';
 
 import { Partner } from './Partner';
 
-@Entity('city', { schema: 'fpis' })
+@Entity()
 export class City extends BaseEntity {
   @Column('varchar', {
     nullable: false,
     primary: true,
-    name: 'AreaCode',
+    name: 'area_code',
   })
   areaCode: string;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
   name: string;
 

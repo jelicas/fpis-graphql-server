@@ -22,7 +22,7 @@ const createToken = (user, secret, expiresIn) => {
 
 export const resolvers: IResolverObject = {
   Query: {
-    getUser: (_, { id }) => User.findOne(id),
+    getUser: (_, { id }) => User.findOne(id, { relations: ['type'] }),
     signinUser: async (_, { username, password }) => {
       console.log(User);
       const user = await User.findOne({

@@ -6,64 +6,54 @@ import { MeasurementUnit } from './MeasurementUnit';
 import { PackageType } from './PackageType';
 import { Product } from './Product';
 
-@Entity('drug', { schema: 'fpis' })
-// @Index('Drug_atc_ID_fk', ['atc'])
-// @Index('Drug_inn_ID_fk', ['inn'])
-// @Index('Drug_measurementunit_ID_fk', ['measurementUnit'])
-// @Index('Drug_packagetype_ID_fk', ['packageType'])
-// @Index('Drug_product_id_fk', ['product'])
+@Entity()
 export class Drug extends BaseEntity {
-  //done
   @OneToOne(type => Product, product => product.drug, {
     primary: true,
     nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'ProductID' })
+  @JoinColumn({ name: 'product_id' })
   product: Product | null;
 
   @Column('varchar', {
     nullable: true,
-    name: 'DrugID',
+    name: 'drug_id',
   })
   drugId: string | null;
 
   @Column('double', {
     nullable: true,
-    name: 'PackageDose',
+    name: 'package_dose',
   })
   packageDose: number | null;
 
-  @Column('int', {
+  @Column('integer', {
     nullable: true,
-    name: 'ItemsPerPackage',
+    name: 'items_per_package',
   })
   itemsPerPackage: number | null;
 
-  //done
   @ManyToOne(type => MeasurementUnit, measurementUnit => measurementUnit.drugs, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'MeasurementUnitID' })
+  @JoinColumn({ name: 'measurement_unit_id' })
   measurementUnit: MeasurementUnit | null;
 
-  //done
   @ManyToOne(type => PackageType, packageType => packageType.drugs, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'PackageTypeID' })
+  @JoinColumn({ name: 'package_type_id' })
   packageType: PackageType | null;
 
-  //done
   @ManyToOne(type => Atc, atc => atc.drugs, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'ATCID' })
+  @JoinColumn({ name: 'atc_id' })
   atc: Atc | null;
 
-  //done
   @ManyToOne(type => Inn, inn => inn.drugs, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'INNID' })
+  @JoinColumn({ name: 'inn_id' })
   inn: Inn | null;
 }

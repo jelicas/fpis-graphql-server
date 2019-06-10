@@ -2,17 +2,17 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from
 
 import { Supplier } from './Supplier';
 
-@Entity('catalog', { schema: 'fpis' })
+@Entity()
 export class Catalog extends BaseEntity {
   @PrimaryColumn({
     type: 'varchar',
-    name: 'ID',
+    name: 'id',
   })
   id: string;
 
   @Column('date', {
     nullable: true,
-    name: 'Date',
+    name: 'date',
   })
   date: string | null;
 
@@ -21,6 +21,6 @@ export class Catalog extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'TaxIdNum' })
-  supplier: Supplier | null;
+  @JoinColumn({ name: 'tax_id_num' })
+  supplier: Supplier;
 }

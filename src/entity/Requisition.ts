@@ -3,36 +3,33 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { RequisitionItem } from './RequisitionItem';
 import { User } from './User';
 
-@Entity('requisition', { schema: 'fpis' })
-// @Index('Requisition_user_id_fk', ['employee'])
+@Entity()
 export class Requisition {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
-  @Column('int', {
+  @Column('date', {
     nullable: true,
-    name: 'DateCreated',
+    name: 'date_created',
   })
-  dateCreated: number | null;
+  dateCreated: Date | null;
 
   @Column('varchar', {
     nullable: true,
-    name: 'SerialNumber',
+    name: 'serial_number',
   })
   serialNumber: string | null;
 
-  //done
   @ManyToOne(type => User, user => user.requisitions, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'EmployeeID' })
+  @JoinColumn({ name: 'employee_id' })
   employee: User | null;
 
-  //done
   @OneToMany(type => RequisitionItem, requisitionItem => requisitionItem.requisition, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

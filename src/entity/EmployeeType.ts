@@ -2,20 +2,20 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 't
 
 import { User } from './User';
 
-@Entity('employee_type', { schema: 'fpis' })
+@Entity()
 export class EmployeeType extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
   @Column('varchar', {
     nullable: false,
-    name: 'Title',
+    name: 'title',
   })
   title: string;
 
-  @OneToMany(type => User, user => user.type, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
+  @OneToMany(() => User, user => user.type)
   users: User[];
 }

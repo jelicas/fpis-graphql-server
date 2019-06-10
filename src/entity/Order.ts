@@ -3,45 +3,41 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColu
 import { Supplier } from './Supplier';
 import { User } from './User';
 
-@Entity('order', { schema: 'fpis' })
-// @Index('order_SupplierID_uindex', ['supplier'], { unique: true })
-// @Index('order_user_id_fk', ['employee'])
+@Entity()
 export class Order extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
   id: number;
 
   @Column('datetime', {
     nullable: false,
     default: () => 'CURRENT_TIMESTAMP',
-    name: 'DateCreated',
+    name: 'date_created',
   })
   dateCreated: Date;
 
   @Column('varchar', {
     nullable: false,
-    name: 'SerialNumber',
+    name: 'serial_number',
   })
   serialNumber: string;
 
   @Column('double', {
     nullable: true,
-    name: 'TotalAmount',
+    name: 'total_amount',
   })
   totalAmount: number | null;
 
-  //done
   @ManyToOne(type => User, user => user.orders, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'EmployeeID' })
+  @JoinColumn({ name: 'employee_id' })
   employee: User | null;
 
-  //done
   @ManyToOne(type => Supplier, supplier => supplier.orders, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'SupplierID' })
+  @JoinColumn({ name: 'supplier_id' })
   supplier: Supplier | null;
 }

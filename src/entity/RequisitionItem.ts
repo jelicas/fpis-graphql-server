@@ -4,34 +4,40 @@ import { Product } from './Product';
 import { ProductPerSupplier } from './ProductPerSupplier';
 import { Requisition } from './Requisition';
 
-@Entity('requisiton_item', { schema: 'fpis' })
-// @Index('requisiton_item_product_id_fk', ['product'])
+@Entity()
 export class RequisitionItem {
+  @Column('integer', {
+    nullable: false,
+    primary: true,
+    name: 'requistion_id',
+  })
+  requistionId: number;
+
+  @Column('integer', {
+    nullable: false,
+    primary: true,
+    name: 'serial_number',
+  })
+  serialNumber: number;
+
   @ManyToOne(type => Requisition, requisition => requisition.requisitionItems, {
     primary: true,
     nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'RequistionID' })
-  requisition: Requisition | null;
-
-  @Column('int', {
-    nullable: false,
-    primary: true,
-    name: 'SerialNumber',
-  })
-  serialNumber: number;
+  @JoinColumn({ name: 'requistion_id' })
+  requisition: Requisition;
 
   @Column('double', {
     nullable: true,
-    name: 'OrderedQuantity',
+    name: 'ordered_quantity',
   })
   orderedQuantity: number | null;
 
   @Column('double', {
     nullable: true,
-    name: 'TotalQuantity',
+    name: 'total_quantity',
   })
   totalQuantity: number | null;
 
@@ -39,20 +45,12 @@ export class RequisitionItem {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'ProductID' })
+  @JoinColumn({ name: 'product_id' })
   product: Product | null;
 
-  //done
   @OneToMany(type => ProductPerSupplier, productPerSupplier => productPerSupplier.requisition, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   productPerSuppliersReq: ProductPerSupplier[];
-
-  @OneToMany(
-    type => ProductPerSupplier,
-    productPerSupplier => productPerSupplier.itemSerialNumber,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }
-  )
-  productPerSuppliersSerNumItem: ProductPerSupplier[];
 }

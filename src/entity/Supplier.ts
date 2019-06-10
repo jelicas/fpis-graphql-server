@@ -13,10 +13,9 @@ import { Order } from './Order';
 import { Partner } from './Partner';
 import { ProductPerSupplier } from './ProductPerSupplier';
 
-@Entity('supplier', { schema: 'fpis' })
-// @Index('Supplier_partner_taxIdNum_fk', ['taxIdNum'], { unique: true })
+@Entity()
 export class Supplier extends BaseEntity {
-  @PrimaryColumn({ name: 'TaxIdNum' })
+  @PrimaryColumn({ name: 'tax_id_num' })
   taxIdNum: string;
 
   @OneToOne(type => Partner, partner => partner.supplier, {
@@ -25,27 +24,24 @@ export class Supplier extends BaseEntity {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'TaxIdNum' })
+  @JoinColumn({ name: 'tax_id_num' })
   partner: Partner | null;
 
   @Column('varchar', {
     nullable: false,
-    name: 'RegNum',
+    name: 'reg_num',
   })
   regNum: string;
 
-  //done
   @OneToMany(type => Catalog, catalog => catalog.supplier, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
   catalogs: Catalog[] | null;
 
-  //done
   @OneToMany(type => Order, order => order.supplier, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   orders: Order[] | null;
 
-  //done
   @OneToMany(type => ProductPerSupplier, productPerSupplier => productPerSupplier.supplier, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',

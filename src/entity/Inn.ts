@@ -2,19 +2,19 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 't
 
 import { Drug } from './Drug';
 
-@Entity('inn', { schema: 'fpis' })
+@Entity()
 export class Inn extends BaseEntity {
   @PrimaryGeneratedColumn({
-    type: 'int',
-    name: 'ID',
+    type: 'integer',
+    name: 'id',
   })
-  ID: number;
+  id: number;
 
-  @Column('int', {
+  @Column('varchar', {
     nullable: false,
-    name: 'Name',
+    name: 'name',
   })
-  Name: number;
+  name: string;
 
   @OneToMany(type => Drug, drug => drug.inn, { onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   drugs: Drug[];
