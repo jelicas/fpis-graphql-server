@@ -1,17 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { Product } from './Product';
 import { ProductPerSupplier } from './ProductPerSupplier';
 import { Requisition } from './Requisition';
 
 @Entity()
-export class RequisitionItem {
+export class RequisitionItem extends BaseEntity {
   @Column('integer', {
     nullable: false,
     primary: true,
-    name: 'requistion_id',
+    name: 'requisition_id',
   })
-  requistionId: number;
+  requisitionId: number;
 
   @Column('integer', {
     nullable: false,
@@ -26,7 +26,7 @@ export class RequisitionItem {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'requistion_id' })
+  @JoinColumn({ name: 'requisition_id' })
   requisition: Requisition;
 
   @Column('double', {

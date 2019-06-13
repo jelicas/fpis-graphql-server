@@ -8,6 +8,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
+import { Catalog } from './Catalog';
 import { CatalogItemProduct } from './CatalogItemProduct';
 import { Factory } from './Factory';
 import { TaxType } from './TaxType';
@@ -83,4 +84,13 @@ export class CatalogItem extends BaseEntity {
     onUpdate: 'CASCADE',
   })
   catalogItemProduct: CatalogItemProduct | null;
+
+  @ManyToOne(type => Catalog, catalog => catalog.catalogItems, {
+    primary: true,
+    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'cat_id' })
+  catalog: Catalog;
 }

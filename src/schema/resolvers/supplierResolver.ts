@@ -3,6 +3,8 @@ import { getManager } from 'typeorm';
 
 import { City } from '../../entity/City';
 import { Partner } from '../../entity/Partner';
+import { ProductPerSupplier } from '../../entity/ProductPerSupplier';
+import { Requisition } from '../../entity/Requisition';
 import { Supplier } from '../../entity/Supplier';
 
 type FilterOption = 'eq' | 'startsWith' | 'contains' | 'endsWith';
@@ -112,6 +114,40 @@ export const resolvers: IResolverObject = {
 
       //2 slucaja da li je AND ili je OR
       //da li sadrzi name, address, pib ili koju kombinaciju od po 2, dakle 3 od po 1, 3 od po 2, 1 od 3 - 7 kombinacija
+    },
+    getSuppliersFromLastRequisiton: async () => {
+      let latestRequisition = await getManager()
+        .createQueryBuilder(Requisition, 'r')
+        .addSelect('MAX(r.date_created)')
+        .groupBy('r.id')
+        .getOne();
+      let latestRequisitionId = latestRequisition.id;
+      console.log(latestRequisition);
+
+      let suppliers = await getManager()
+        .createQueryBuilder(ProductPerSupplier, 'p')
+        .innerJoinAndSelect('p.supplier', 's')
+        .innerJoinAndSelect('s.partner', 'partner')
+        .innerJoinAndSelect('partner.city', 'city')
+        .select(
+          'DISTINCT p.tax_id_num, s.reg_num, partner.name as partner_name, partner.address, city.name as city_name, city.area_code'
+        )
+        .where('p.requisition_id like :rid and p.ordered like 0', { rid: latestRequisitionId })
+        .getRawMany();
+
+      let requisitionSuppliers = suppliers.map(e => {
+        return {
+          taxIdNum: e.tax_id_num,
+          regNum: e.reg_num,
+          name: e.partner_name,
+          city: { areaCode: e.area_code, name: e.city_name },
+          address: e.address,
+        };
+      });
+
+      console.log(suppliers);
+
+      return requisitionSuppliers;
     },
   },
   Mutation: {

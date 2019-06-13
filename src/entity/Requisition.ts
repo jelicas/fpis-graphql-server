@@ -1,10 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { RequisitionItem } from './RequisitionItem';
 import { User } from './User';
 
 @Entity()
-export class Requisition {
+export class Requisition extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'integer',
     name: 'id',

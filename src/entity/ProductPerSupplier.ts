@@ -30,7 +30,7 @@ export class ProductPerSupplier extends BaseEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([
-    { name: 'requisition_id', referencedColumnName: 'requistionId' },
+    { name: 'requisition_id', referencedColumnName: 'requisitionId' },
     { name: 'item_serial_number', referencedColumnName: 'serialNumber' },
   ])
   requisition: RequisitionItem | null;

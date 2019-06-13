@@ -1,5 +1,14 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
+import { OrderItem } from './OrderItem';
 import { Supplier } from './Supplier';
 import { User } from './User';
 
@@ -40,4 +49,10 @@ export class Order extends BaseEntity {
   })
   @JoinColumn({ name: 'supplier_id' })
   supplier: Supplier | null;
+
+  @OneToMany(type => OrderItem, orderItem => orderItem.order, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  orderItems: [OrderItem];
 }

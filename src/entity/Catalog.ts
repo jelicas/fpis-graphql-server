@@ -1,5 +1,14 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
 
+import { CatalogItem } from './CatalogItem';
 import { Supplier } from './Supplier';
 
 @Entity()
@@ -23,4 +32,10 @@ export class Catalog extends BaseEntity {
   })
   @JoinColumn({ name: 'tax_id_num' })
   supplier: Supplier;
+
+  @OneToMany(type => CatalogItem, catalogItem => catalogItem.catalog, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  catalogItems: CatalogItem[];
 }
