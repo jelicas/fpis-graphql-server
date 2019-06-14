@@ -23,7 +23,6 @@ export const typeDefs = gql`
 
   input Order {
     id: Int
-    serialNumber: String
     dateCreated: String
     employeeId: Int
     taxIdNum: String
@@ -41,7 +40,7 @@ export const typeDefs = gql`
 
   extend type Query {
     getLastRequisition: Requisition
-    getRequisitionItemsPerSupplier(requisitionId: String, supplierId: String): [RequisitionItem]
+    getRequisitionItemsPerSupplier(requisitionId: Int, supplierId: String): [RequisitionItem]
   }
 
   extend type Mutation {

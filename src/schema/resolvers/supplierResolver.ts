@@ -27,11 +27,27 @@ const util = {
 export const resolvers: IResolverObject = {
   Supplier: {
     name: root => {
+      console.log('ROOT');
       console.log(root);
-      return root.partner.name;
+      if (root.partner) {
+        return root.partner.name;
+      } else return root.name;
     },
-    address: root => root.partner.address,
-    city: root => root.partner.city,
+    address: root => {
+      if (root.partner) {
+        return root.partner.address;
+      } else return root.address;
+    },
+    city: root => {
+      if (root.partner) {
+        return root.partner.city;
+      } else return root.city;
+    },
+    taxIdNum: root => {
+      if (root.partner) {
+        return root.partner.taxIdNum;
+      } else return root.taxIdNum;
+    },
   },
   Query: {
     getCities: () => City.find(),
@@ -115,14 +131,13 @@ export const resolvers: IResolverObject = {
       //2 slucaja da li je AND ili je OR
       //da li sadrzi name, address, pib ili koju kombinaciju od po 2, dakle 3 od po 1, 3 od po 2, 1 od 3 - 7 kombinacija
     },
-    getSuppliersFromLastRequisiton: async () => {
+    getSuppliersFromLastRequisition: async () => {
       let latestRequisition = await getManager()
         .createQueryBuilder(Requisition, 'r')
         .addSelect('MAX(r.date_created)')
         .groupBy('r.id')
         .getOne();
       let latestRequisitionId = latestRequisition.id;
-      console.log(latestRequisition);
 
       let suppliers = await getManager()
         .createQueryBuilder(ProductPerSupplier, 'p')
@@ -132,20 +147,18 @@ export const resolvers: IResolverObject = {
         .select(
           'DISTINCT p.tax_id_num, s.reg_num, partner.name as partner_name, partner.address, city.name as city_name, city.area_code'
         )
-        .where('p.requisition_id like :rid and p.ordered like 0', { rid: latestRequisitionId })
+        .where('p.requisition_id like :rid ', { rid: latestRequisitionId })
         .getRawMany();
 
-      let requisitionSuppliers = suppliers.map(e => {
-        return {
-          taxIdNum: e.tax_id_num,
-          regNum: e.reg_num,
-          name: e.partner_name,
-          city: { areaCode: e.area_code, name: e.city_name },
-          address: e.address,
-        };
-      });
+      let requisitionSuppliers = await suppliers.map(e => ({
+        taxIdNum: e.tax_id_num,
+        regNum: e.reg_num,
+        name: e.partner_name,
+        city: { areaCode: e.area_code, name: e.city_name },
+        address: e.address,
+      }));
 
-      console.log(suppliers);
+      console.log(requisitionSuppliers);
 
       return requisitionSuppliers;
     },
@@ -160,9 +173,9 @@ export const resolvers: IResolverObject = {
           address,
           city: newCity,
         });
-        const partner = await Partner.findOne(taxIdNum);
+        // const partner = await Partner.findOne(taxIdNum);
         const newSupplier = await transactionalEntityManager.insert(Supplier, {
-          partner,
+          taxIdNum,
           regNum,
         });
       });

@@ -79,7 +79,6 @@ export const resolvers: IResolverObject = {
           let employee = await User.findOne(order.employeeId);
           let supplier = await Supplier.findOne(order.taxIdNum);
           newOrder = await transactionalEntityManager.insert(Order, {
-            serialNumber: order.serialNumber,
             totalAmount,
             employee,
             supplier,

@@ -27,11 +27,11 @@ export class Order extends BaseEntity {
   })
   dateCreated: Date;
 
-  @Column('varchar', {
-    nullable: false,
-    name: 'serial_number',
-  })
-  serialNumber: string;
+  // @Column('varchar', {
+  //   nullable: false,
+  //   name: 'serial_number',
+  // })
+  // serialNumber: string;
 
   @Column('double', {
     nullable: true,

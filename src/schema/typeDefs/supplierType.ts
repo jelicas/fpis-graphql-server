@@ -36,8 +36,8 @@ export const typeDefs = gql`
     getCities: [City]
     getSuppliers: [Supplier]
     getSupplier(taxIdNum: String!): Supplier
+    getSuppliersFromLastRequisition: [Supplier]
     filterSuppliers(filter: SupplierFilterParameter): [Supplier]
-    getSuppliersFromLastRequisiton: [Supplier]
   }
 
   extend type Mutation {
