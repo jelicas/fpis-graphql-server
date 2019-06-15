@@ -27,6 +27,7 @@ export const typeDefs = gql`
     employeeId: Int
     taxIdNum: String
     orderItems: [OrderItem]
+    supplierName: String
   }
 
   input OrderItem {
@@ -38,9 +39,17 @@ export const typeDefs = gql`
     discount: Float
   }
 
+  type OrderType {
+    id: Int
+    dateCreated: String
+    employeeId: Int
+    supplier: Supplier
+  }
+
   extend type Query {
     getLastRequisition: Requisition
     getRequisitionItemsPerSupplier(requisitionId: Int, supplierId: String): [RequisitionItem]
+    getAllOrders: [OrderType]
   }
 
   extend type Mutation {

@@ -20,6 +20,13 @@ const util = {
 };
 
 export const resolvers: IResolverObject = {
+  OrderType: {
+    dateCreated: root => {
+      console.log('ROOT');
+      console.log(root);
+      return new Date(root.dateCreated).toLocaleDateString();
+    },
+  },
   Query: {
     getLastRequisition: async () => {
       let latestRequisition = await getManager()
@@ -38,6 +45,7 @@ export const resolvers: IResolverObject = {
         .innerJoinAndSelect('cip.catItem', 'ci')
         .innerJoinAndSelect('ci.catalog', 'c')
         .innerJoinAndSelect('c.supplier', 's')
+        .andWhere('pps.ordered like :ord', { ord: 0 })
         .andWhere('pps.requisitionId like :rid', { rid: requisitionId })
         .andWhere('pps.taxIdNum like :tin', { tin: supplierId })
         .andWhere('s.taxIdNum like :tin', { tin: supplierId })
@@ -60,6 +68,11 @@ export const resolvers: IResolverObject = {
 
       console.log(structuredReqItems);
       return structuredReqItems;
+    },
+    getAllOrders: async () => {
+      let orders = await Order.find({ relations: ['supplier', 'supplier.partner'] });
+      console.log(orders);
+      return orders;
     },
   },
   Mutation: {
