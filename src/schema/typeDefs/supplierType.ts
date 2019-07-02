@@ -11,7 +11,7 @@ export const typeDefs = gql`
   input SupplierParameters {
     name: StringOperators
     address: StringOperators
-    PIB: StringOperators
+    pib: StringOperators
   }
 
   input SupplierFilterParameter {

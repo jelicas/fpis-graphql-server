@@ -39,20 +39,35 @@ export const typeDefs = gql`
     discount: Float
   }
 
+  type OrderItemType {
+    orderId: Int
+    serialNumber: Int
+    requisitionId: Int
+    itemSerialNumber: Int
+    supplierId: String
+    orderedQuantity: Float
+    totalQuantity: Float
+    product: RequisitionProduct
+  }
+
   type OrderType {
     id: Int
     dateCreated: String
-    employeeId: Int
+    employee: User
     supplier: Supplier
+    totalAmount: Float
+    orderItems: [OrderItemType]
   }
 
   extend type Query {
     getLastRequisition: Requisition
     getRequisitionItemsPerSupplier(requisitionId: Int, supplierId: String): [RequisitionItem]
     getAllOrders: [OrderType]
+    getOrder(orderId: Int): OrderType
   }
 
   extend type Mutation {
     createOrder(order: Order): Boolean
+    editOrder(order: Order): Boolean
   }
 `;

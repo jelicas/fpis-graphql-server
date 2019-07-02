@@ -96,7 +96,8 @@ export const resolvers: IResolverObject = {
       } else {
         let query = getManager()
           .createQueryBuilder(Supplier, 's')
-          .innerJoinAndSelect('s.partner', 'p');
+          .innerJoinAndSelect('s.partner', 'p')
+          .innerJoinAndSelect('p.city', 'c');
 
         filter.AND.forEach(filterObject => {
           let filterParam = Object.keys(filterObject)[0];
@@ -129,7 +130,6 @@ export const resolvers: IResolverObject = {
       return res;
 
       //2 slucaja da li je AND ili je OR
-      //da li sadrzi name, address, pib ili koju kombinaciju od po 2, dakle 3 od po 1, 3 od po 2, 1 od 3 - 7 kombinacija
     },
     getSuppliersFromLastRequisition: async () => {
       let latestRequisition = await getManager()

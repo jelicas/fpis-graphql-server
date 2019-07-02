@@ -74,6 +74,51 @@ export const resolvers: IResolverObject = {
       console.log(orders);
       return orders;
     },
+    getOrder: async (_, { orderId }) => {
+      let order: any = await getManager()
+        .createQueryBuilder('Order', 'o')
+        .innerJoinAndSelect('o.employee', 'e')
+        .innerJoinAndSelect('o.supplier', 'os')
+        .innerJoinAndSelect('os.partner', 'p')
+        .innerJoinAndSelect('o.orderItems', 'oi')
+        .innerJoinAndSelect('oi.requisition', 'oir')
+        .innerJoinAndSelect('oir.requisition', 'oirr')
+        .innerJoinAndSelect('oirr.product', 'pr')
+        .innerJoinAndSelect('pr.catalogItemProducts', 'cip')
+        .innerJoinAndSelect('cip.catItem', 'ci')
+        .innerJoinAndSelect('ci.catalog', 'c')
+        .innerJoinAndSelect('c.supplier', 's')
+        .andWhere('o.id like :ord', { ord: orderId })
+        .andWhere('s.taxIdNum like os.taxIdNum')
+        .getOne();
+
+      // console.log(order.orderItems[0]);
+
+      let structuredOrderItems = order.orderItems.map(e => {
+        // console.log(e);
+        let el = <any>e;
+        console.log(el.serialNumber);
+        return {
+          orderId: el.orderId,
+          serialNumber: el.serialNumber,
+          requisitionId: el.requisitionId,
+          itemSerialNumber: el.itemSerialNumber,
+          supplierId: el.supplierId,
+          orderedQuantity: el.requisition.orderedQuantity,
+          totalQuantity: el.requisition.orderQuantity,
+          product: {
+            id: el.requisition.requisition.product.id,
+            name: el.requisition.requisition.product.name,
+            supplierPrice: el.requisition.requisition.product.catalogItemProducts[0].catItem.price,
+          },
+        };
+      });
+
+      order.orderItems = structuredOrderItems;
+
+      console.log(order.orderItems);
+      return order;
+    },
   },
   Mutation: {
     createOrder: async (_, { order }) => {
@@ -145,6 +190,120 @@ export const resolvers: IResolverObject = {
             );
             i++;
           });
+          await Promise.all(promises);
+        });
+      } catch (e) {
+        console.log(e);
+        return false;
+      }
+      return true;
+    },
+
+    editOrder: async (_, { order }) => {
+      try {
+        await getManager().transaction(async transactionalEntityManager => {
+          let orderItems = order.orderItems;
+
+          let totalAmount = 0;
+          orderItems.forEach(e => {
+            totalAmount += e.price * e.quantity;
+          });
+
+          //insert into order
+          // let d: Date = util.getDateFromString(order.dateCreated);
+          let employee = await User.findOne(order.employeeId);
+
+          await transactionalEntityManager.update(
+            Order,
+            { id: order.id },
+            {
+              totalAmount,
+              employee,
+            }
+          );
+
+          let i = 1;
+
+          let promises = [];
+
+          orderItems.forEach(e => {
+            if (e.quantity === 0) {
+              //delete order items
+              promises.push(
+                transactionalEntityManager.delete(OrderItem, {
+                  orderId: order.id,
+                  serialNumber: e.itemSerialNumber,
+                })
+              );
+
+              //update requisitionItem
+              promises.push(
+                transactionalEntityManager.update(
+                  RequisitionItem,
+                  { requisitionId: e.requisitionId, serialNumber: e.itemSerialNumber },
+                  {
+                    orderedQuantity: e.quantity,
+                  }
+                )
+              );
+
+              //update productPerSupplier
+              promises.push(
+                transactionalEntityManager.update(
+                  ProductPerSupplier,
+                  {
+                    requisitionId: e.requisitionId,
+                    itemSerialNumber: e.itemSerialNumber,
+                    taxIdNum: e.supplierId,
+                  },
+                  {
+                    orderedQuantity: e.quantity,
+                    ordered: false,
+                  }
+                )
+              );
+            } else {
+              //update orderItem
+              promises.push(
+                transactionalEntityManager.update(
+                  OrderItem,
+                  { orderId: order.id, serialNumber: e.itemSerialNumber },
+                  {
+                    serialNumber: i,
+                  }
+                )
+              );
+
+              //update requisitionItem
+              promises.push(
+                transactionalEntityManager.update(
+                  RequisitionItem,
+                  { requisitionId: e.requisitionId, serialNumber: e.itemSerialNumber },
+                  {
+                    orderedQuantity: e.quantity,
+                  }
+                )
+              );
+
+              //update productPerSupplier
+              promises.push(
+                transactionalEntityManager.update(
+                  ProductPerSupplier,
+                  {
+                    requisitionId: e.requisitionId,
+                    itemSerialNumber: e.itemSerialNumber,
+                    taxIdNum: e.supplierId,
+                  },
+                  {
+                    orderedQuantity: e.quantity,
+                    ordered: true,
+                  }
+                )
+              );
+              i++;
+            }
+          });
+
           await Promise.all(promises);
         });
       } catch (e) {
