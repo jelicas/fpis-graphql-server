@@ -74,19 +74,19 @@ export const resolvers: IResolverObject = {
           switch (filterParam) {
             case 'name':
               filterOption = Object.keys(filterObject['name'])[0]; // eq, startsWith etc.
-              query.orWhere('p.name like :name', {
+              query.orWhere('LOWER(p.name) like LOWER(:name)', {
                 name: util.getLikeCondition(filterOption, filterObject['name'][filterOption]),
               });
               break;
             case 'address':
               filterOption = Object.keys(filterObject['address'])[0]; // eq, startsWith etc.
-              query.orWhere('p.address like :address', {
+              query.orWhere('LOWER(p.address) like LOWER(:address)', {
                 address: util.getLikeCondition(filterOption, filterObject['address'][filterOption]),
               });
               break;
             case 'pib':
               filterOption = Object.keys(filterObject['pib'])[0]; // eq, startsWith etc.
-              query.orWhere('p.taxIdNum like :pib', {
+              query.orWhere('LOWER(p.taxIdNum) like LOWER(:pib)', {
                 pib: util.getLikeCondition(filterOption, filterObject['pib'][filterOption]),
               });
               break;
@@ -105,19 +105,19 @@ export const resolvers: IResolverObject = {
           switch (filterParam) {
             case 'name':
               filterOption = Object.keys(filterObject['name'])[0]; // eq, startsWith etc.
-              query.andWhere('p.name like :name', {
+              query.andWhere('LOWER(p.name) like LOWER(:name)', {
                 name: util.getLikeCondition(filterOption, filterObject['name'][filterOption]),
               });
               break;
             case 'address':
               filterOption = Object.keys(filterObject['address'])[0]; // eq, startsWith etc.
-              query.andWhere('p.address like :address', {
+              query.andWhere('LOWER(p.address) like LOWER(:address)', {
                 address: util.getLikeCondition(filterOption, filterObject['address'][filterOption]),
               });
               break;
             case 'pib':
               filterOption = Object.keys(filterObject['pib'])[0]; // eq, startsWith etc.
-              query.andWhere('p.taxIdNum like :pib', {
+              query.andWhere('LOWER(p.taxIdNum) like LOWER(:pib)', {
                 pib: util.getLikeCondition(filterOption, filterObject['pib'][filterOption]),
               });
               break;
@@ -126,10 +126,7 @@ export const resolvers: IResolverObject = {
 
         res = await query.getMany();
       }
-      console.log();
       return res;
-
-      //2 slucaja da li je AND ili je OR
     },
     getSuppliersFromLastRequisition: async () => {
       let latestRequisition = await getManager()
